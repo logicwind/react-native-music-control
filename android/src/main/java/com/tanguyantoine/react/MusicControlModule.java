@@ -3,6 +3,7 @@ package com.tanguyantoine.react;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentCallbacks2;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -74,8 +75,8 @@ public class MusicControlModule extends ReactContextBaseJavaModule implements Co
 
     public NotificationClose notificationClose = NotificationClose.PAUSED;
 
-    private String channelId = "react-native-music-control";
-    private int notificationId = 100;
+    private String channelId = "com.guichaguri.trackplayer";
+    private int notificationId = 1;
 
     public MusicControlModule(ReactApplicationContext context) {
         super(context);
@@ -125,7 +126,7 @@ public class MusicControlModule extends ReactContextBaseJavaModule implements Co
     private void updateNotificationMediaStyle() {
         if (!Build.MANUFACTURER.toLowerCase(Locale.getDefault()).contains("huawei") && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             MediaStyle style = new MediaStyle();
-            style.setMediaSession(session.getSessionToken());
+            // style.setMediaSession(session.getSessionToken());
             int controlCount = 0;
             if(hasControl(PlaybackStateCompat.ACTION_PLAY) || hasControl(PlaybackStateCompat.ACTION_PAUSE) || hasControl(PlaybackStateCompat.ACTION_PLAY_PAUSE)) {
                 controlCount += 1;
@@ -164,7 +165,9 @@ public class MusicControlModule extends ReactContextBaseJavaModule implements Co
 
         emitter = new MusicControlEventEmitter(context, notificationId);
 
-        session = new MediaSessionCompat(context, "MusicControl");
+        Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        session = new MediaSessionCompat(context, "MusicControl", null, PendingIntent.getBroadcast(context, 0, mediaButtonIntent, PendingIntent.FLAG_IMMUTABLE));
+
         session.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
                 MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
@@ -337,7 +340,7 @@ public class MusicControlModule extends ReactContextBaseJavaModule implements Co
         long duration = metadata.hasKey("duration") ? (long)(metadata.getDouble("duration") * 1000) : 0;
         int notificationColor = metadata.hasKey("color") ? metadata.getInt("color") : NotificationCompat.COLOR_DEFAULT;
         final boolean isColorized = metadata.hasKey("colorized") ? metadata.getBoolean("colorized") : ! metadata.hasKey("color");
-        String notificationIcon = metadata.hasKey("notificationIcon") ? metadata.getString("notificationIcon") : null;
+        // String notificationIcon = metadata.hasKey("notificationIcon") ? metadata.getString("notificationIcon") : null;
 
         RatingCompat rating;
         if(metadata.hasKey("rating")) {
@@ -371,9 +374,9 @@ public class MusicControlModule extends ReactContextBaseJavaModule implements Co
         nb.setColor(notificationColor);
         nb.setColorized(false);
  
-        if(notificationIcon != null){
-            notification.setCustomNotificationIcon(notificationIcon);
-        }
+        // if(notificationIcon != null){
+        //     notification.setCustomNotificationIcon(notificationIcon);
+        // }
 
         if(metadata.hasKey("artwork")) {
             String artwork = null;
