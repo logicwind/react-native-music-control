@@ -1,10 +1,4 @@
-⚠️ **NO LONGER MAINTAINED** ⚠️
-
-Please use [react-native-track-player](https://github.com/doublesymmetry/react-native-track-player) instead ✅
-
----
-
-## react-native-music-control
+# react-native-music-control
 
 Display and manage media controls on lock screen and notification center for iOS and Android.
 
